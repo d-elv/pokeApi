@@ -24,6 +24,7 @@ function PokeApp() {
         axios
             .get(`https://pokeapi.co/api/v2/pokemon/${lowerCasePokemonName}`)
             .then((response) => {
+                console.log(response)
                 setPokemonInfo({
                     name: pokemonName,
                     species: response.data.species.name,
