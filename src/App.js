@@ -1,9 +1,10 @@
 import "./App.css";
-import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useNavigate, useParams } from "react-router-dom";
 import FourOhFour from "./components/PageNotFound/PageNotFound";
 import { useState } from "react";
 import "../src/App.css";
 import axios from "axios";
+import { useEffect, useLayoutEffect } from "react";
 
 
 function toTitleCase(string) {
@@ -17,7 +18,8 @@ function toTitleCase(string) {
 
 function PokeApp() {
     const navigate = useNavigate();
-    const [pokemonName, setPokemonName] = useState("");
+    const { pokemonName : urlPokemonName } = useParams();
+    const [pokemonName, setPokemonName] = useState(urlPokemonName || "");
     const [isChosen, setIsChosen] = useState(false);
     const [pokemonInfo, setPokemonInfo] = useState({
         name: "",
@@ -65,6 +67,30 @@ function PokeApp() {
             });
         setIsChosen(true);
     };
+    
+    const handleSearch = () => {
+        searchPokemon();
+    }
+
+    useLayoutEffect(() => { // useLayoutEffect to check the URL & make the api call before the rest of the page renders.
+        if (urlPokemonName) {
+            setPokemonName(urlPokemonName);
+            searchPokemon();
+        };
+    }, [urlPokemonName]);
+
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            if (event.key === "Enter") {
+                handleSearch();
+            }
+        };
+        document.addEventListener("keydown", handleKeyDown);
+        return () => {
+            document.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [handleSearch]);
+
     return (
         <div className="App">
             <div className="title-section">
@@ -147,6 +173,10 @@ export default function App() {
 }
 
 // TODO:
-// 5) Refreshing the page causes the pokemon to go
-// 6) Update the URL when searching for a pok'e'mon
 // 3) Add autofill / autocorrect to search engine? (Another library)
+// 7) Add in the img of the back of the pok'e'mon that users can flick between with a small arrow.
+
+// COMPLETE
+// 5) Refreshing the page causes the pokemon to go. Make it so the pok'e'mon stay.
+// 6) Update the URL when searching for a pok'e'mon
+// 8) If given a url with a pokemon on it, the api will call that.
