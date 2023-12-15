@@ -5,6 +5,16 @@ import { useState } from "react";
 import "../src/App.css";
 import axios from "axios";
 
+
+function toTitleCase(string) {
+    return string.replace(
+      /\w\S*/g,
+      function(text) {
+        return text.charAt(0).toUpperCase() + text.substr(1).toLowerCase();
+      }
+    );
+  }
+
 function PokeApp() {
     const navigate = useNavigate();
     const [pokemonName, setPokemonName] = useState("");
@@ -19,21 +29,31 @@ function PokeApp() {
         type: "",
     });
 
+
+    const updateUrl = (lowerCasePokemonName) => {
+        navigate(`/${lowerCasePokemonName}`, { replace: true });
+    };
+
     const searchPokemon = () => {
         const lowerCasePokemonName = pokemonName.toLowerCase();
         axios
             .get(`https://pokeapi.co/api/v2/pokemon/${lowerCasePokemonName}`)
             .then((response) => {
-                console.log(response)
+                const weightInKg = Math.round(response.data.weight / 10)
+                const heightInMetres = Math.round((response.data.height / 10) * 10) / 10;
+                const titleCasePokemonName = toTitleCase(pokemonName)
                 setPokemonInfo({
-                    name: pokemonName,
+                    name: titleCasePokemonName,
                     species: response.data.species.name,
                     imageUrl: response.data.sprites.front_default,
                     hp: response.data.stats[0].base_stat,
                     attack: response.data.stats[1].base_stat,
                     defense: response.data.stats[2].base_stat,
                     type: response.data.types[0].type.name,
+                    weight: weightInKg,
+                    height: heightInMetres,
                 });
+                updateUrl(lowerCasePokemonName)
             })
             .catch((error) => {
                 if (error.response) {
@@ -88,6 +108,14 @@ function PokeApp() {
                                     <span className="bold">Defence:</span>{" "}
                                     {pokemonInfo.defense}
                                 </p>
+                                <p>
+                                    <span className="bold">Weight:</span>{" "}
+                                    {pokemonInfo.weight}{" (kg)"}
+                                </p>
+                                <p>
+                                    <span className="bold">Height:</span>{" "}
+                                    {pokemonInfo.height}{" (m)"}
+                                </p>
                             </div>
                             <div className="image-window">
                                 <img
@@ -110,7 +138,7 @@ export default function App() {
             <BrowserRouter>
                 <Routes>
                     <Route path="/" exact element={<PokeApp />} />
-                    <Route path="/pokeapp" exact element={<PokeApp />} />
+                    <Route path="/:pokemonName" exact element={<PokeApp />} />
                     <Route path="/404" exact element={<FourOhFour />} />
                 </Routes>
             </BrowserRouter>
@@ -119,5 +147,6 @@ export default function App() {
 }
 
 // TODO:
+// 5) Refreshing the page causes the pokemon to go
+// 6) Update the URL when searching for a pok'e'mon
 // 3) Add autofill / autocorrect to search engine? (Another library)
-// 4) sort 404 page, angry pikachu
