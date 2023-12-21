@@ -114,13 +114,6 @@ export default function PokemonDetailsPage() {
             </p>
           </div>
           <div className="image-window">
-            {/* <img
-              className="pokemon-image"
-              src={pokemonInfo.frontImageUrl}
-              alt="front view of chosen pokemon"
-            >
-            </img> */}
-            
             {showBackImage ? (
               <img
               className="pokemon-image"
