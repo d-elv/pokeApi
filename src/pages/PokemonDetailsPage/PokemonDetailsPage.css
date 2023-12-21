@@ -17,6 +17,7 @@
   padding-bottom: 0em;
   padding-left: 1em;
   margin-top: 1em;
+  width: 514px;
 }
 
 .stats-title {
@@ -58,6 +59,7 @@
   height: fit-content;
   padding: 8px;
   margin-top: 2em;
+  width: 132px;
 }
 
 .text-stats p {

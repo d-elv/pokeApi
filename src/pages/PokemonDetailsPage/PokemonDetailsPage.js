@@ -13,7 +13,6 @@ function toTitleCase(string) {
 export default function PokemonDetailsPage() {
   const navigate = useNavigate();
   let location = useLocation();
-  // const [pokemonName, setPokemonName] = useState("")
   const [showBackImage, setShowBackImage] = useState(false);
   const [pokemonInfo, setPokemonInfo] = useState({
     name: "",
@@ -65,7 +64,10 @@ export default function PokemonDetailsPage() {
             return;
           }
         }
-      });
+      })
+      .finally(() => {
+        setShowBackImage(false)
+      })
   };
 
   const handleImageBoolean = () => {
@@ -125,17 +127,16 @@ export default function PokemonDetailsPage() {
               src={pokemonInfo.backImageUrl}
               alt="front view of chosen pokemon"
               >
-      </img>
-      ) : (
-        <img
-        className="pokemon-image"
-        src={pokemonInfo.frontImageUrl}
-        alt="front view of chosen pokemon"
-        >
-      </img>
-      )}
-      <button className="image-arrow" onClick={handleImageBoolean}>➭</button>
-            
+              </img>
+              ) : (
+                <img
+                className="pokemon-image"
+                src={pokemonInfo.frontImageUrl}
+                alt="front view of chosen pokemon"
+                >
+              </img>
+              )}
+                <button className="image-arrow" onClick={handleImageBoolean}>➭</button>
           </div>
         </div>
       </div>
