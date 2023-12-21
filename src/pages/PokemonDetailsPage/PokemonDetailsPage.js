@@ -12,8 +12,9 @@ function toTitleCase(string) {
 
 export default function PokemonDetailsPage() {
   const navigate = useNavigate();
-  const [pokemonName, setPokemonName] = useState("")
-  const [url, setUrl] = useState(useLocation())
+  let location = useLocation();
+  // const [pokemonName, setPokemonName] = useState("")
+  const [showBackImage, setShowBackImage] = useState(false);
   const [pokemonInfo, setPokemonInfo] = useState({
     name: "",
     id: "",
@@ -28,28 +29,27 @@ export default function PokemonDetailsPage() {
   });
 
   useEffect(() => {
-    //   // useLayoutEffect to check the URL & make the api call before the rest of the page renders.
-    if (url.pathname) {
+    if (location) {
       searchPokemon();
-    }
-  }, [url.pathname]);
+    } 
+  }, [location]);
 
   const searchPokemon = () => {
-    
-    const lowerCasePokemonName = url.pathname.substring(1).toLowerCase();
+    const lowerCasePokemonName = location.pathname.substring(1).toLowerCase();
     axios
       .get(`https://pokeapi.co/api/v2/pokemon/${lowerCasePokemonName}`)
       .then((response) => {
+        console.log(response.data)
         const weightInKg = Math.round(response.data.weight / 10);
         const heightInMetres =
           Math.round((response.data.height / 10) * 10) / 10;
-        setPokemonName(lowerCasePokemonName)
-        const titleCasePokemonName = toTitleCase(pokemonName);
+        const titleCasePokemonName = toTitleCase(lowerCasePokemonName);
         setPokemonInfo({
           name: titleCasePokemonName,
           id: response.data.id,
           species: response.data.species.name,
-          imageUrl: response.data.sprites.front_default,
+          frontImageUrl: response.data.sprites.front_default,
+          backImageUrl: response.data.sprites.back_default,
           hp: response.data.stats[0].base_stat,
           attack: response.data.stats[1].base_stat,
           defense: response.data.stats[2].base_stat,
@@ -62,12 +62,19 @@ export default function PokemonDetailsPage() {
         if (error.response) {
           if (error.response.status === 404) {
             navigate("/404");
-            console.log("404")
             return;
           }
         }
       });
   };
+
+  const handleImageBoolean = () => {
+    if (showBackImage === true) {
+      setShowBackImage(false)
+    } else {
+      setShowBackImage(true)
+    }
+  }
 
   return (
     <div className="display-section">
@@ -105,12 +112,30 @@ export default function PokemonDetailsPage() {
             </p>
           </div>
           <div className="image-window">
-            <img
+            {/* <img
               className="pokemon-image"
-              src={pokemonInfo.imageUrl}
+              src={pokemonInfo.frontImageUrl}
               alt="front view of chosen pokemon"
             >
-            </img>
+            </img> */}
+            
+            {showBackImage ? (
+              <img
+              className="pokemon-image"
+              src={pokemonInfo.backImageUrl}
+              alt="front view of chosen pokemon"
+              >
+      </img>
+      ) : (
+        <img
+        className="pokemon-image"
+        src={pokemonInfo.frontImageUrl}
+        alt="front view of chosen pokemon"
+        >
+      </img>
+      )}
+      <button className="image-arrow" onClick={handleImageBoolean}>➭</button>
+            
           </div>
         </div>
       </div>

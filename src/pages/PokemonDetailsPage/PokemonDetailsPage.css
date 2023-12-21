@@ -35,6 +35,22 @@
   justify-content: space-between;
 }
 
+.image-window {
+  display: flex;
+}
+
+.image-arrow {
+  align-self: center;
+  background: none;
+  border: none;
+  font-size: 3rem;
+  cursor: pointer;
+}
+
+.image-arrow:active {
+  color: #4c6275;
+}
+
 .text-stats {
   align-items: center;
   background-color: #ebc324;
