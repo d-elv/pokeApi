@@ -4,6 +4,39 @@
   align-items: center;
 }
 
+.button-and-title {
+  clear: both;
+}
+
+.copy-to-clipboard {
+  background-color: #8a8a8a;
+  border-radius: 2px;
+  color: #ededed;
+  float: left;
+  margin-top: 0.05em;
+  margin-left: 1.8em;
+  padding-left: 8px;
+  padding-right: 8px;
+  border: none;
+  outline: none;
+  font-size: 2rem;
+}
+
+.copy-to-clipboard:hover {
+  cursor: pointer;
+}
+
+.copy-to-clipboard:active {
+  background-color: #737373;
+}
+
+.stats-title {
+  text-align: center;
+  margin: 0;
+  font-size: 2.4rem;
+  color: darkslategrey;
+}
+
 .pokemon-image {
   margin-top: -1em;
   height: 300px;
@@ -18,16 +51,6 @@
   padding-left: 1em;
   margin-top: 1em;
   width: 514px;
-}
-
-.stats-title {
-  text-align: center;
-  margin-top: 0;
-  margin-right: 0.4em;
-  margin-bottom: 0.4em;
-  margin-left: 0.4em;
-  font-size: 2.4rem;
-  color: darkslategrey;
 }
 
 .text-and-image-wrapper {

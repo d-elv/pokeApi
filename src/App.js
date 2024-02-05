@@ -5,13 +5,15 @@ import {
   Routes,
   useParams,
   Link,
-  Outlet
+  Outlet,
+  useLocation
 } from "react-router-dom";
 import { useState, useEffect } from "react";
 import FourOhFour from "./components/PageNotFound/PageNotFound";
-import PokemonDetailsPage from "./pages/PokemonDetailsPage/PokemonDetailsPage.js";
+import PokemonDetailsPage from "./pages/PokemonDetailsPage/PokemonDetailsPage.jsx";
 
 function PokeApp() {
+  const location = useLocation();
   const [isChosen, setIsChosen] = useState(false)
   const { pokemonName: urlPokemonName } = useParams();
   const [pokemonName, setPokemonName] = useState(urlPokemonName || "");
@@ -29,8 +31,18 @@ function PokeApp() {
   }, []);
 
   const handleChosen = () => {
-    setIsChosen(true)
+    if (pokemonName) {
+      setIsChosen(true)
+    }
   }
+
+  useEffect(() => {
+    if (location.pathname !== "/") {
+      setIsChosen(true)
+    } else {
+      setIsChosen(false);
+    }
+  }, [location.pathname]);
 
   return (
     <div className="App">
@@ -74,13 +86,14 @@ export default function App() {
 }
 
 // TODO:
-// 3) Add autofill / autocorrect to search engine? (Another library)
-// 7) Add in the img of the back of the pok'e'mon that users can flick between with a small arrow.
+// Add a copy to clipboard button for easy sharing
+// 3) Add autofill / autocorrect to search engine? (Another library?)
 
 
 // COMPLETE
 // Nested route for /:pokemonName PokemonDetailsPage
 // move searchPokemon into details page. we're only passing the name across which triggers the api call
+// 7) Add in the img of the back of the pok'e'mon that users can flick between with a small arrow.
 // 5) Refreshing the page causes the pokemon to go. Make it so the pok'e'mon stay.
 // 6) Update the URL when searching for a pok'e'mon
 // 8) If given a url with a pokemon on it, the api will call that.

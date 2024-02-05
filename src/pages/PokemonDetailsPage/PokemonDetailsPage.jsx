@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, forwardRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { Snackbar } from "../../components/snackbar/snackbar";
 import axios from "axios";
-import "./PokemonDetailsPage.css"
-
+import "./PokemonDetailsPage.css";
 
 function toTitleCase(string) {
   return string.replace(/\w\S*/g, function (text) {
@@ -13,12 +13,14 @@ function toTitleCase(string) {
 export default function PokemonDetailsPage() {
   const navigate = useNavigate();
   let location = useLocation();
+  const snackbarRef = useRef(null);
   const [showBackImage, setShowBackImage] = useState(false);
   const [pokemonInfo, setPokemonInfo] = useState({
     name: "",
     id: "",
     species: "",
-    imageUrl: "",
+    frontImageUrl: "",
+    backImageUrl: "",
     hp: "",
     attack: "",
     defense: "",
@@ -30,7 +32,7 @@ export default function PokemonDetailsPage() {
   useEffect(() => {
     if (location) {
       searchPokemon();
-    } 
+    }
   }, [location]);
 
   const searchPokemon = () => {
@@ -38,7 +40,6 @@ export default function PokemonDetailsPage() {
     axios
       .get(`https://pokeapi.co/api/v2/pokemon/${lowerCasePokemonName}`)
       .then((response) => {
-        console.log(response.data)
         const weightInKg = Math.round(response.data.weight / 10);
         const heightInMetres =
           Math.round((response.data.height / 10) * 10) / 10;
@@ -66,73 +67,86 @@ export default function PokemonDetailsPage() {
         }
       })
       .finally(() => {
-        setShowBackImage(false)
-      })
+        setShowBackImage(false);
+      });
+  };
+
+  const copyToClipbaord = () => {
+    navigator.clipboard.writeText(window.location.href);
   };
 
   const handleImageBoolean = () => {
     if (showBackImage === true) {
-      setShowBackImage(false)
+      setShowBackImage(false);
     } else {
-      setShowBackImage(true)
+      setShowBackImage(true);
     }
-  }
+  };
 
   return (
     <div className="display-section">
+      <div className="snackbar-area">
+        <Snackbar message="URL copied to clipboard!" ref={snackbarRef} />
+      </div>
       <div className="stats-window">
-        <h1 className="stats-title">{pokemonInfo.name}</h1>
+        <div className="button-and-title">
+          <button
+            className="copy-to-clipboard"
+            onClick={() => {
+              snackbarRef.current.show();
+              copyToClipbaord();
+            }}
+          >
+            ⎘
+          </button>
+          <h1 className="stats-title">{pokemonInfo.name}</h1>
+        </div>
         <div className="text-and-image-wrapper">
           <div className="text-stats">
             <p>
-              <span className="bold">Species:</span>{" "}
-              {pokemonInfo.species}
+              <span className="bold">Species:</span> {pokemonInfo.species}
             </p>
             <p>
-              <span className="bold">Type:</span>{" "}
-              {pokemonInfo.type}
+              <span className="bold">Type:</span> {pokemonInfo.type}
             </p>
             <p>
-              <span className="bold">HP:</span>{" "}
-              {pokemonInfo.hp}
+              <span className="bold">HP:</span> {pokemonInfo.hp}
             </p>
             <p>
-              <span className="bold">Attack:</span>{" "}
-              {pokemonInfo.attack}
+              <span className="bold">Attack:</span> {pokemonInfo.attack}
             </p>
             <p>
-              <span className="bold">Defence:</span>{" "}
-              {pokemonInfo.defense}
+              <span className="bold">Defence:</span> {pokemonInfo.defense}
             </p>
             <p>
-              <span className="bold">Height:</span>{" "}
-              {pokemonInfo.height}{" (m)"}
+              <span className="bold">Height:</span> {pokemonInfo.height}
+              {" (m)"}
             </p>
             <p>
-              <span className="bold">Weight:</span>{" "}
-              {pokemonInfo.weight}{" (kg)"}
+              <span className="bold">Weight:</span> {pokemonInfo.weight}
+              {" (kg)"}
             </p>
           </div>
           <div className="image-window">
             {showBackImage ? (
               <img
-              className="pokemon-image"
-              src={pokemonInfo.backImageUrl}
-              alt="front view of chosen pokemon"
-              >
-              </img>
-              ) : (
-                <img
+                className="pokemon-image"
+                src={pokemonInfo.backImageUrl}
+                alt="front view of chosen pokemon"
+              ></img>
+            ) : (
+              <img
                 className="pokemon-image"
                 src={pokemonInfo.frontImageUrl}
                 alt="front view of chosen pokemon"
-                >
-              </img>
-              )}
-                <button className="image-arrow" onClick={handleImageBoolean}>➭</button>
+              ></img>
+            )}
+            <button className="image-arrow" onClick={handleImageBoolean}>
+              ➭
+            </button>
           </div>
         </div>
       </div>
     </div>
   );
-};
+}
