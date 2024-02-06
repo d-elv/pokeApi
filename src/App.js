@@ -17,22 +17,12 @@ function PokeApp() {
   const [isChosen, setIsChosen] = useState(false)
   const { pokemonName: urlPokemonName } = useParams();
   const [pokemonName, setPokemonName] = useState(urlPokemonName || "");
- 
-  useEffect(() => {
-    const handleKeyDown = (event) => {
-      if (event.key === "Enter") {
-        document.getElementById("search-button").click();
-      }
-    };
-    document.addEventListener("keydown", handleKeyDown);
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, []);
 
-  const handleChosen = () => {
+  const handleSubmit = (event) => {
+    event.preventDefault();
     if (pokemonName) {
-      setIsChosen(true)
+      setIsChosen(true);
+
     }
   }
 
@@ -48,23 +38,25 @@ function PokeApp() {
     <div className="App">
       <div className="title-section">
         <h1 className="title">Poke Stats</h1>
-        <input
-          className="search-input"
-          type="text"
-          onChange={(event) => {
-            setPokemonName(event.target.value);
-          }}
-        ></input>
-        <Link to={{ pathname: `/${pokemonName}`}}>
-          <button id="search-button" className="search-button" onClick={handleChosen}>
-            Search Pokemon
-          </button>
-        </Link>
+        <form onSubmit={handleSubmit} className="form-elements">
+          <input
+            className="search-input"
+            type="text"
+            onChange={(event) => {
+              setPokemonName(event.target.value);
+            }}
+          />
+          <Link to={{ pathname: `/${pokemonName}`}}>
+              <button id="search-button" className="search-button">
+                Search Pokemon
+              </button>
+          </Link>
+        </form>
       </div>
       {isChosen ? (
         <Outlet />
       ) : (
-        <h1 className="call-to-action">Please Choose a Pokemon</h1>
+        <h1 className="call-to-action">Please Search for a Pokemon</h1>
       )}
     </div>
   );

@@ -1,4 +1,4 @@
-.snackbar {
+.toast {
   position: fixed;
   left: 50%;
   top: 10%;
@@ -12,11 +12,11 @@
   background-color: rgba(0, 245, 147, 0.8);
 }
 
-.snackbar.symbol {
+.toast .symbol {
   flex: 20%;
 }
 
-.snackbar.message {
+.toast .message {
   flex: 80%;
 }
 
@@ -24,12 +24,11 @@
   font-size: 1.7rem;
 }
 
-#show {
+.toast[data-state="visible"] {
   visibility: visible;
   animation: fadeIn 0.5s, fadeOut 0.5s 1.5s;
 }
-
-#hide {
+.toast[data-state="invisible"] {
   visibility: hidden;
 }
 

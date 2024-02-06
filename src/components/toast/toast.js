@@ -1,26 +1,26 @@
 import React from "react"
 import { useState, forwardRef, useImperativeHandle } from "react"
-import "./snackbar.css"
+import "./toast.css"
 
-export const Snackbar = forwardRef((props, ref) => {
-  const [showSnackbar, setShowSnackbar] = useState(false);
+export const Toast = forwardRef(({ children }, ref) => {
+  const [showToast, setShowToast] = useState(false);
 
   useImperativeHandle(ref, () => ({
     show() {
-      setShowSnackbar(true);
+      setShowToast(true);
       setTimeout(() => {
-        setShowSnackbar(false);
+        setShowToast(false);
       }, 2000);
     },
   }))
   
   return (
-  <div className="snackbar" id={showSnackbar ? "show" : "hide"}>
+  <div className="toast" data-state={showToast ? "visible" : "invisible"}>
     <div className="symbol">
       <h1>&#x270C;</h1>
     </div>
     <div className="message">
-      <p>{props.message}</p>
+      {children}
     </div>
   </div>
   )

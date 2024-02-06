@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Snackbar } from "../../components/snackbar/snackbar";
+import { Toast } from "../../components/toast/toast";
 import axios from "axios";
 import "./PokemonDetailsPage.css";
 
@@ -13,7 +13,7 @@ function toTitleCase(string) {
 export default function PokemonDetailsPage() {
   const navigate = useNavigate();
   let location = useLocation();
-  const snackbarRef = useRef(null);
+  const toastRef = useRef(null);
   const [showBackImage, setShowBackImage] = useState(false);
   const [pokemonInfo, setPokemonInfo] = useState({
     name: "",
@@ -85,15 +85,13 @@ export default function PokemonDetailsPage() {
 
   return (
     <div className="display-section">
-      <div className="snackbar-area">
-        <Snackbar message="URL copied to clipboard!" ref={snackbarRef} />
-      </div>
+      <Toast ref={toastRef}>URL copied to clipboard!</Toast>
       <div className="stats-window">
         <div className="button-and-title">
           <button
             className="copy-to-clipboard"
             onClick={() => {
-              snackbarRef.current.show();
+              toastRef.current.show();
               copyToClipbaord();
             }}
           >
