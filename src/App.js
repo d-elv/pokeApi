@@ -6,33 +6,21 @@ import {
   useParams,
   Link,
   Outlet,
-  useLocation
+  useNavigate
 } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import FourOhFour from "./components/PageNotFound/PageNotFound";
 import PokemonDetailsPage from "./pages/PokemonDetailsPage/PokemonDetailsPage.jsx";
 
 function PokeApp() {
-  const location = useLocation();
-  const [isChosen, setIsChosen] = useState(false)
+  const navigate = useNavigate();
   const { pokemonName: urlPokemonName } = useParams();
   const [pokemonName, setPokemonName] = useState(urlPokemonName || "");
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (pokemonName) {
-      setIsChosen(true);
-
-    }
+    navigate(`/${pokemonName}`)
   }
-
-  useEffect(() => {
-    if (location.pathname !== "/") {
-      setIsChosen(true)
-    } else {
-      setIsChosen(false);
-    }
-  }, [location.pathname]);
 
   return (
     <div className="App">
@@ -46,20 +34,18 @@ function PokeApp() {
               setPokemonName(event.target.value);
             }}
           />
-          <Link to={{ pathname: `/${pokemonName}`}}>
-              <button id="search-button" className="search-button">
-                Search Pokemon
-              </button>
+          <Link to={{ pathname: `/${pokemonName}`}} className="search-button">
+            <p className="search-button-text">Search Pokemon</p>
           </Link>
         </form>
       </div>
-      {isChosen ? (
         <Outlet />
-      ) : (
-        <h1 className="call-to-action">Please Search for a Pokemon</h1>
-      )}
     </div>
   );
+}
+
+const PokemonIndexPage = () => {
+  return <h1 className="call-to-action">Please Search for a Pokemon</h1> 
 }
 
 export default function App() {
@@ -68,6 +54,7 @@ export default function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" exact element={<PokeApp />}>
+            <Route index element={<PokemonIndexPage />} />
             <Route path="/:pokemonName" exact element={<PokemonDetailsPage />} />
           </Route>
           <Route path="/404" exact element={<FourOhFour />} />

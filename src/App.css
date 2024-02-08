@@ -13,7 +13,7 @@
   background-color: #5db9ff;
   width: 100%;
   height: 270px;
-  padding-bottom: 0.4em;
+  padding-bottom: 0.5em;
   color: white;
 }
 
@@ -39,15 +39,27 @@
 }
 
 .search-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
   width: 180px;
   height: 60px;
-  margin-top: 0.8em;
+  margin-top: 0.3em;
+  padding-top: 0.2em;
+  padding-bottom: 0.2em;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
   border-radius: 10px;
-  font-size: 1rem;
-  padding-left: 8px;
   border: none;
   background-color: #407faf;
   color: white;
+}
+
+.search-button-text {
+  margin: 0;
+  padding: 0;
+  font-size: 1.1rem;
 }
 
 .search-button:hover {

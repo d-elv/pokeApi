@@ -130,14 +130,14 @@ export default function PokemonDetailsPage() {
               <img
                 className="pokemon-image"
                 src={pokemonInfo.backImageUrl}
-                alt="front view of chosen pokemon"
-              ></img>
+                alt="back view of chosen pokemon"
+              />
             ) : (
               <img
                 className="pokemon-image"
                 src={pokemonInfo.frontImageUrl}
                 alt="front view of chosen pokemon"
-              ></img>
+              />
             )}
             <button className="image-arrow" onClick={handleImageBoolean}>
               ➭
