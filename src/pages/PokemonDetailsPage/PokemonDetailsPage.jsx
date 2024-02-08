@@ -126,19 +126,20 @@ export default function PokemonDetailsPage() {
             </p>
           </div>
           <div className="image-window">
-            {showBackImage ? (
-              <img
-                className="pokemon-image"
-                src={pokemonInfo.backImageUrl}
-                alt="back view of chosen pokemon"
-              />
-            ) : (
-              <img
-                className="pokemon-image"
-                src={pokemonInfo.frontImageUrl}
-                alt="front view of chosen pokemon"
-              />
-            )}
+            <img
+              className={`pokemon-image ${
+                showBackImage ? "invisible" : "visible"
+              }`}
+              src={pokemonInfo.frontImageUrl}
+              alt="front view of chosen pokemon"
+            />
+            <img
+              className={`pokemon-image ${
+                showBackImage ? "visible" : "invisible"
+              }`}
+              src={pokemonInfo.backImageUrl}
+              alt="back view of chosen pokemon"
+            />
             <button className="image-arrow" onClick={handleImageBoolean}>
               ➭
             </button>
