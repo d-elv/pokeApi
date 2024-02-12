@@ -1,122 +1,78 @@
 import "./App.css";
-import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
-import FourOhFour from "./components/PageNotFound/PageNotFound";
+import {
+  BrowserRouter,
+  Route,
+  Routes,
+  useParams,
+  Link,
+  Outlet,
+  useNavigate
+} from "react-router-dom";
 import { useState } from "react";
-import "../src/App.css";
-import axios from "axios";
+import FourOhFour from "./components/PageNotFound/PageNotFound";
+import PokemonDetailsPage from "./pages/PokemonDetailsPage/PokemonDetailsPage.jsx";
 
 function PokeApp() {
-    const navigate = useNavigate();
-    const [pokemonName, setPokemonName] = useState("");
-    const [isChosen, setIsChosen] = useState(false);
-    const [pokemonInfo, setPokemonInfo] = useState({
-        name: "",
-        species: "",
-        imageUrl: "",
-        hp: "",
-        attack: "",
-        defense: "",
-        type: "",
-    });
+  const navigate = useNavigate();
+  const { pokemonName: urlPokemonName } = useParams();
+  const [pokemonName, setPokemonName] = useState(urlPokemonName || "");
 
-    const searchPokemon = () => {
-        const lowerCasePokemonName = pokemonName.toLowerCase();
-        axios
-            .get(`https://pokeapi.co/api/v2/pokemon/${lowerCasePokemonName}`)
-            .then((response) => {
-                setPokemonInfo({
-                    name: pokemonName,
-                    species: response.data.species.name,
-                    imageUrl: response.data.sprites.front_default,
-                    hp: response.data.stats[0].base_stat,
-                    attack: response.data.stats[1].base_stat,
-                    defense: response.data.stats[2].base_stat,
-                    type: response.data.types[0].type.name,
-                });
-            })
-            .catch((error) => {
-                if (error.response) {
-                    if (error.response.status === 404) {
-                        navigate("/404");
-                        return;
-                    }
-                }
-            });
-        setIsChosen(true);
-    };
-    return (
-        <div className="App">
-            <div className="title-section">
-                <h1>Poke Stats</h1>
-                <input
-                    className="search-input"
-                    type="text"
-                    onChange={(event) => {
-                        setPokemonName(event.target.value);
-                    }}
-                ></input>
-                <button onClick={searchPokemon} className="search-button">
-                    Search Pokemon
-                </button>
-            </div>
-            <div className="display-section">
-                {!isChosen ? (
-                    <h1>Please choose a pokemon</h1>
-                ) : (
-                    <div className="stats-window">
-                        <h1 className="stats-title">{pokemonInfo.name}</h1>
-                        <div className="text-and-image-wrapper">
-                            <div className="text-stats">
-                                <p>
-                                    <span className="bold">Species:</span>{" "}
-                                    {pokemonInfo.species}
-                                </p>
-                                <p>
-                                    <span className="bold">Type:</span>{" "}
-                                    {pokemonInfo.type}
-                                </p>
-                                <p>
-                                    <span className="bold">HP:</span>{" "}
-                                    {pokemonInfo.hp}
-                                </p>
-                                <p>
-                                    <span className="bold">Attack:</span>{" "}
-                                    {pokemonInfo.attack}
-                                </p>
-                                <p>
-                                    <span className="bold">Defence:</span>{" "}
-                                    {pokemonInfo.defense}
-                                </p>
-                            </div>
-                            <div className="image-window">
-                                <img
-                                    className="pokemon-image"
-                                    src={pokemonInfo.imageUrl}
-                                    alt="front view of chosen pokemon"
-                                ></img>
-                            </div>
-                        </div>
-                    </div>
-                )}
-            </div>
-        </div>
-    );
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    navigate(`/${pokemonName}`)
+  }
+
+  return (
+    <div className="App">
+      <div className="title-section">
+        <h1 className="title">Poke Stats</h1>
+        <form onSubmit={handleSubmit} className="form-elements">
+          <input
+            className="search-input"
+            type="text"
+            onChange={(event) => {
+              setPokemonName(event.target.value);
+            }}
+          />
+          <Link to={{ pathname: `/${pokemonName}`}} className="search-button">
+            <p className="search-button-text">Search Pokemon</p>
+          </Link>
+        </form>
+      </div>
+        <Outlet />
+    </div>
+  );
+}
+
+const PokemonIndexPage = () => {
+  return <h1 className="call-to-action">Please Search for a Pokemon</h1> 
 }
 
 export default function App() {
-    return (
-        <div className="wrapper">
-            <BrowserRouter>
-                <Routes>
-                    <Route path="/" exact element={<PokeApp />} />
-                    <Route path="/pokeapp" exact element={<PokeApp />} />
-                    <Route path="/404" exact element={<FourOhFour />} />
-                </Routes>
-            </BrowserRouter>
-        </div>
-    );
+  return (
+    <div className="wrapper">
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" exact element={<PokeApp />}>
+            <Route index element={<PokemonIndexPage />} />
+            <Route path="/:pokemonName" exact element={<PokemonDetailsPage />} />
+          </Route>
+          <Route path="/404" exact element={<FourOhFour />} />
+        </Routes>
+      </BrowserRouter>
+    </div>
+  );
 }
 
 // TODO:
-// 3) Add autofill / autocorrect to search engine? (Another library)
-// 4) sort 404 page, angry pikachu
+// Add a copy to clipboard button for easy sharing
+// 3) Add autofill / autocorrect to search engine? (Another library?)
+
+
+// COMPLETE
+// Nested route for /:pokemonName PokemonDetailsPage
+// move searchPokemon into details page. we're only passing the name across which triggers the api call
+// 7) Add in the img of the back of the pok'e'mon that users can flick between with a small arrow.
+// 5) Refreshing the page causes the pokemon to go. Make it so the pok'e'mon stay.
+// 6) Update the URL when searching for a pok'e'mon
+// 8) If given a url with a pokemon on it, the api will call that.
