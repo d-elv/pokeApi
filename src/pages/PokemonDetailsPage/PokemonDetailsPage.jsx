@@ -87,7 +87,7 @@ export default function PokemonDetailsPage() {
     <div className="display-section">
       <Toast ref={toastRef}>URL copied to clipboard!</Toast>
       <div className="stats-window">
-        <div className="button-and-title">
+        <div className="button-and-name">
           <button
             className="copy-to-clipboard"
             onClick={() => {
