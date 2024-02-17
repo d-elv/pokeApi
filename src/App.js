@@ -23,7 +23,7 @@ function PokeApp() {
   }
 
   return (
-    <div className="App">
+    <div className="app">
       <div className="title-section">
         <h1 className="title">Poke Stats</h1>
         <form onSubmit={handleSubmit} className="form-elements">
