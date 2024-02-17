@@ -4,15 +4,19 @@
   align-items: center;
 }
 
+.button-and-name {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
 .copy-to-clipboard {
+  grid-column-start: 2;
   background-color: #8a8a8a;
   border-radius: 2px;
   color: #ededed;
-  /* float: left; */
-  margin-top: 0.05em;
-  margin-left: 2.5em;
-  padding-left: 8px;
-  padding-right: 8px;
+  margin: 0 auto;
+  padding-right: 0.4em;
+  padding-left: 0.4em;
   border: none;
   outline: none;
   font-size: 2rem;
@@ -27,7 +31,7 @@
 }
 
 .stats-title {
-  text-align: center;
+  grid-column-start: 4;
   margin: 0;
   font-size: 2.4rem;
   color: darkslategrey;
@@ -102,15 +106,10 @@
   font-weight: bold;
 }
 
-@media screen and (max-width: 440px) {
+@media screen and (max-width: 520px) {
   .title {
     margin-top: 0.3em;
     margin-bottom: 0.3em;
-  }
-
-  .button-and-name {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
   }
 
   .copy-to-clipboard {
@@ -122,21 +121,13 @@
     text-align: center;
   }
 
-  .stats-title {
-    grid-column-start: 4;
-  }
-
-  .display-section {
-    max-width: 100vdw;
-    flex-grow: 1;
-  }
   .stats-window {
     margin: 0;
     border-radius: 0;
     padding-top: 0.5em;
     padding-bottom: 2em;
-    height: fit-content;
-    width: 100vdw;
+    height: 100%;
+    width: 100%;
   }
 
   .image-window {
@@ -160,17 +151,23 @@
     align-items: center;
   }
   .pokemon-image {
-    width: 9em;
-    height: 9em;
+    width: 10em;
+    height: 10em;
   }
 
   .text-stats {
     margin-left: 0;
     margin-top: 0.5em;
-    font-size: 2rem;
     width: 145px;
   }
   .text-stats p {
-    font-size: 1.1rem;
+    font-size: 1rem;
+  }
+}
+
+@media screen and (max-width: 440px) {
+  .pokemon-image {
+    width: 9em;
+    height: 9em;
   }
 }

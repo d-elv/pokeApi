@@ -71,8 +71,30 @@
   color: black;
 }
 
-@media screen and (max-width: 440px) {
+@media screen and (max-width: 720px) {
+  .call-to-action {
+    width: 8em;
+    margin: 0 auto;
+    margin-top: 1em;
+  }
+}
+@media screen and (max-width: 520px) {
   body {
     width: 100vdw;
+  }
+  .call-to-action {
+    font-size: 2.5rem;
+    width: 8em;
+    margin: 0 auto;
+    margin-top: 1em;
+  }
+}
+
+@media screen and (max-width: 440px) {
+  .call-to-action {
+    font-size: 2rem;
+    width: 8em;
+    margin: 0 auto;
+    margin-top: 1.3em;
   }
 }
