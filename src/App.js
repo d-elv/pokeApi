@@ -18,6 +18,7 @@ function PokeApp() {
   const { pokemonName: urlPokemonName } = useParams();
   const [pokemonName, setPokemonName] = useState(urlPokemonName || "");
   const [listOfAllPokemonNames, setListOfAllPokemonNames] = useState();
+  const [filteredListOfPokemon, setFilteredListOfPokemon] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
 
   useEffect(() => {
@@ -41,57 +42,57 @@ function PokeApp() {
     navigate(`/${pokemonName}`)
   }
 
-  const handleInputOnFocus = () => {
-    setShowDropdown(true)
+  const handleInputChange = (event) => {
+    setPokemonName(event.target.value);
+    if (event.target.value) {
+      setShowDropdown(true);
+    } else if (event.target.value === "") {
+      setShowDropdown(false);
+    }
+
+    setFilteredListOfPokemon(
+      listOfAllPokemonNames.filter(name => {
+        return name.startsWith(event.target.value);
+      })
+    );
   }
 
-  const handleInputBlur = () => {
-    setShowDropdown(false)
+  const handleDropdownLinkClick = (pokemonNameFromFilteredList) => {
+    setPokemonName(pokemonNameFromFilteredList);
+    setShowDropdown(false);
   }
-
-  const tempPokeNames = ["pikachu", "onix", "bulbasaur", "charmander", "charmeleon", "weedle"]
 
   return (
     <div className="app">
       <div className="title-section">
         <h1 className="title">Poke Stats</h1>
         <form onSubmit={handleSubmit} className="form-elements">
-          <input
-            className="search-input"
-            type="text"
-            onChange={(event) => {
-              setPokemonName(event.target.value);
-            }}
-            onFocus={handleInputOnFocus}
-            // onBlur={handleInputBlur}
-          />
-          <ul className={`pokemon-name-list ${
-            showDropdown ? "dropdown" : ""
-          }`}>
-            <div className="dropdown-content">
-              {tempPokeNames.map((pokemonNameFromList, index) => {
-                return (
-                  <li key={index} className="list-item-pokemon-name">
-                    <Link to={{ pathname: `/${pokemonNameFromList}`}} className="pokemon-list-link" onClick={handleInputBlur}>
-                      <p className="single-poke-name">{pokemonNameFromList}</p>
-                    </Link>
-                  </li>
-                )
-                })}
-              </div>
-          </ul>
-          {/* <ul className="pokemon-name-list">
-            {listOfAllPokemonNames.map((pokemonName, index) => {
-              return (
-                <li key={index} className="list-pokemon-name">
-                  {pokemonName}
-                </li>
-              )
-              })}
-          </ul> */}
-          <Link to={{ pathname: `/${pokemonName}`}} className="search-button">
+          <div className="search-container">
+            <input
+              className="search-input"
+              type="text"
+              onChange={handleInputChange}
+              value={pokemonName}
+            />
+            <ul className={`pokemon-name-list ${
+              showDropdown ? "dropdown" : ""
+            }`}>
+              <div className="dropdown-content">
+                {filteredListOfPokemon.map((pokemonNameFromFilteredList, index) => {
+                  return (
+                    <li key={index} className="list-item-pokemon-name">
+                      <Link to={{ pathname: `/${pokemonNameFromFilteredList}`}} className="pokemon-list-link" onClick={() => handleDropdownLinkClick(pokemonNameFromFilteredList)}>
+                        <p className="single-poke-name">{pokemonNameFromFilteredList}</p>
+                      </Link>
+                    </li>
+                  )
+                  })}
+                </div>
+            </ul>
+          </div>
+          {/* <Link to={{ pathname: `/${pokemonName}`}} className="search-button">
             <p className="search-button-text">Search Pokemon</p>
-          </Link>
+          </Link> */}
         </form>
       </div>
         <Outlet />
@@ -100,7 +101,6 @@ function PokeApp() {
 }
 
 const PokemonIndexPage = () => {
-  // console.log(allPokemonNames)
   return (
   <>
   <h1 className="call-to-action">Please Search for a Pokemon</h1>
@@ -125,11 +125,11 @@ export default function App() {
 }
 
 // TODO:
-// Add a copy to clipboard button for easy sharing
-// 3) Add autofill / autocorrect to search engine? (Another library?)
 
 
 // COMPLETE
+// 3) Add autofill / autocorrect to search engine? (Another library?)
+// Add a copy to clipboard button for easy sharing
 // Nested route for /:pokemonName PokemonDetailsPage
 // move searchPokemon into details page. we're only passing the name across which triggers the api call
 // 7) Add in the img of the back of the pok'e'mon that users can flick between with a small arrow.
