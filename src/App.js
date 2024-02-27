@@ -8,7 +8,8 @@ import {
   Outlet,
   useNavigate
 } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import FourOhFour from "./components/PageNotFound/PageNotFound";
 import PokemonDetailsPage from "./pages/PokemonDetailsPage/PokemonDetailsPage.jsx";
 
@@ -16,11 +17,39 @@ function PokeApp() {
   const navigate = useNavigate();
   const { pokemonName: urlPokemonName } = useParams();
   const [pokemonName, setPokemonName] = useState(urlPokemonName || "");
+  const [listOfAllPokemonNames, setListOfAllPokemonNames] = useState();
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  useEffect(() => {
+    GetPokemonList();
+  }, [])
+
+  const GetPokemonList = async () => {
+    try {
+      const response = await axios.get("https://pokeapi.co/api/v2/pokemon?limit=1302");
+      const pokeArray = response.data.results;
+      const allPokemonNames = pokeArray.map((pokemon) => pokemon.name);
+      setListOfAllPokemonNames(allPokemonNames);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
 
   const handleSubmit = (event) => {
     event.preventDefault();
     navigate(`/${pokemonName}`)
   }
+
+  const handleInputOnFocus = () => {
+    setShowDropdown(true)
+  }
+
+  const handleInputBlur = () => {
+    setShowDropdown(false)
+  }
+
+  const tempPokeNames = ["pikachu", "onix", "bulbasaur", "charmander", "charmeleon", "weedle"]
 
   return (
     <div className="app">
@@ -33,7 +62,33 @@ function PokeApp() {
             onChange={(event) => {
               setPokemonName(event.target.value);
             }}
+            onFocus={handleInputOnFocus}
+            // onBlur={handleInputBlur}
           />
+          <ul className={`pokemon-name-list ${
+            showDropdown ? "dropdown" : ""
+          }`}>
+            <div className="dropdown-content">
+              {tempPokeNames.map((pokemonNameFromList, index) => {
+                return (
+                  <li key={index} className="list-item-pokemon-name">
+                    <Link to={{ pathname: `/${pokemonNameFromList}`}} className="pokemon-list-link" onClick={handleInputBlur}>
+                      <p className="single-poke-name">{pokemonNameFromList}</p>
+                    </Link>
+                  </li>
+                )
+                })}
+              </div>
+          </ul>
+          {/* <ul className="pokemon-name-list">
+            {listOfAllPokemonNames.map((pokemonName, index) => {
+              return (
+                <li key={index} className="list-pokemon-name">
+                  {pokemonName}
+                </li>
+              )
+              })}
+          </ul> */}
           <Link to={{ pathname: `/${pokemonName}`}} className="search-button">
             <p className="search-button-text">Search Pokemon</p>
           </Link>
@@ -45,7 +100,12 @@ function PokeApp() {
 }
 
 const PokemonIndexPage = () => {
-  return <h1 className="call-to-action">Please Search for a Pokemon</h1> 
+  // console.log(allPokemonNames)
+  return (
+  <>
+  <h1 className="call-to-action">Please Search for a Pokemon</h1>
+  </>
+  )
 }
 
 export default function App() {
