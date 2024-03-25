@@ -90,9 +90,6 @@ function PokeApp() {
                 </div>
             </ul>
           </div>
-          {/* <Link to={{ pathname: `/${pokemonName}`}} className="search-button">
-            <p className="search-button-text">Search Pokemon</p>
-          </Link> */}
         </form>
       </div>
         <Outlet />
