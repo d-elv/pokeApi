@@ -8,7 +8,8 @@ import {
   Outlet,
   useNavigate
 } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import FourOhFour from "./components/PageNotFound/PageNotFound";
 import PokemonDetailsPage from "./pages/PokemonDetailsPage/PokemonDetailsPage.jsx";
 
@@ -16,10 +17,49 @@ function PokeApp() {
   const navigate = useNavigate();
   const { pokemonName: urlPokemonName } = useParams();
   const [pokemonName, setPokemonName] = useState(urlPokemonName || "");
+  const [listOfAllPokemonNames, setListOfAllPokemonNames] = useState();
+  const [filteredListOfPokemon, setFilteredListOfPokemon] = useState([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  useEffect(() => {
+    GetPokemonList();
+  }, [])
+
+  const GetPokemonList = async () => {
+    try {
+      const response = await axios.get("https://pokeapi.co/api/v2/pokemon?limit=1302");
+      const pokeArray = response.data.results;
+      const allPokemonNames = pokeArray.map((pokemon) => pokemon.name);
+      setListOfAllPokemonNames(allPokemonNames);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
 
   const handleSubmit = (event) => {
     event.preventDefault();
     navigate(`/${pokemonName}`)
+  }
+
+  const handleInputChange = (event) => {
+    setPokemonName(event.target.value);
+    if (event.target.value) {
+      setShowDropdown(true);
+    } else if (event.target.value === "") {
+      setShowDropdown(false);
+    }
+
+    setFilteredListOfPokemon(
+      listOfAllPokemonNames.filter(name => {
+        return name.startsWith(event.target.value);
+      })
+    );
+  }
+
+  const handleDropdownLinkClick = (pokemonNameFromFilteredList) => {
+    setPokemonName(pokemonNameFromFilteredList);
+    setShowDropdown(false);
   }
 
   return (
@@ -27,16 +67,29 @@ function PokeApp() {
       <div className="title-section">
         <h1 className="title">Poke Stats</h1>
         <form onSubmit={handleSubmit} className="form-elements">
-          <input
-            className="search-input"
-            type="text"
-            onChange={(event) => {
-              setPokemonName(event.target.value);
-            }}
-          />
-          <Link to={{ pathname: `/${pokemonName}`}} className="search-button">
-            <p className="search-button-text">Search Pokemon</p>
-          </Link>
+          <div className="search-container">
+            <input
+              className="search-input"
+              type="text"
+              onChange={handleInputChange}
+              value={pokemonName}
+            />
+            <ul className={`pokemon-name-list ${
+              showDropdown ? "dropdown" : ""
+            }`}>
+              <div className="dropdown-content">
+                {filteredListOfPokemon.map((pokemonNameFromFilteredList, index) => {
+                  return (
+                    <li key={index} className="list-item-pokemon-name">
+                      <Link to={{ pathname: `/${pokemonNameFromFilteredList}`}} className="pokemon-list-link" onClick={() => handleDropdownLinkClick(pokemonNameFromFilteredList)}>
+                        <p className="single-poke-name">{pokemonNameFromFilteredList}</p>
+                      </Link>
+                    </li>
+                  )
+                  })}
+                </div>
+            </ul>
+          </div>
         </form>
       </div>
         <Outlet />
@@ -45,7 +98,11 @@ function PokeApp() {
 }
 
 const PokemonIndexPage = () => {
-  return <h1 className="call-to-action">Please Search for a Pokemon</h1> 
+  return (
+  <>
+  <h1 className="call-to-action">Please Search for a Pokemon</h1>
+  </>
+  )
 }
 
 export default function App() {
@@ -65,11 +122,11 @@ export default function App() {
 }
 
 // TODO:
-// Add a copy to clipboard button for easy sharing
-// 3) Add autofill / autocorrect to search engine? (Another library?)
 
 
 // COMPLETE
+// 3) Add autofill / autocorrect to search engine? (Another library?)
+// Add a copy to clipboard button for easy sharing
 // Nested route for /:pokemonName PokemonDetailsPage
 // move searchPokemon into details page. we're only passing the name across which triggers the api call
 // 7) Add in the img of the back of the pok'e'mon that users can flick between with a small arrow.
