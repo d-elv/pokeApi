@@ -29,6 +29,8 @@
 
 .title {
   font-size: 3rem;
+  margin-top: 0.3em;
+  margin-bottom: 0.3em;
   color: white;
 }
 
@@ -130,13 +132,29 @@
 
 .call-to-action {
   text-align: center;
-  font-size: 3rem;
   color: black;
+  font-size: 2rem;
+  width: 8em;
+  margin: 0 auto;
+  margin-top: 1.3em;
 }
 
-@media screen and (max-width: 440px) {
-  body {
-    overflow: hidden;
-    width: 100vdw;
+@media screen and (min-width: 440px) {
+  .call-to-action {
+    font-size: 2rem;
+    margin-top: 1.3em;
+  }
+}
+@media screen and (min-width: 520px) {
+  .call-to-action {
+    font-size: 2.5rem;
+    margin-top: 1em;
+  }
+}
+
+@media screen and (min-width: 720px) {
+  .call-to-action {
+    font-size: 3rem;
+    width: 100%;
   }
 }
