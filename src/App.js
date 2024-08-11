@@ -73,6 +73,7 @@ function PokeApp() {
               type="text"
               onChange={handleInputChange}
               value={pokemonName}
+              placeholder="Type here to search"
             />
             <ul className={`pokemon-name-list ${
               showDropdown ? "dropdown" : ""
