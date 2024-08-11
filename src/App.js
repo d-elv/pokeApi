@@ -52,7 +52,7 @@ function PokeApp() {
 
     setFilteredListOfPokemon(
       listOfAllPokemonNames.filter(name => {
-        return name.startsWith(event.target.value);
+        return name.startsWith((event.target.value).toLowerCase());
       })
     );
   }
@@ -73,6 +73,7 @@ function PokeApp() {
               type="text"
               onChange={handleInputChange}
               value={pokemonName}
+              placeholder="Type here to search"
             />
             <ul className={`pokemon-name-list ${
               showDropdown ? "dropdown" : ""
