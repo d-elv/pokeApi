@@ -62,6 +62,10 @@ function PokeApp() {
     setShowDropdown(false);
   }
 
+  const getRandomPokemon = () => {
+    
+  }
+
   return (
     <div className="app">
       <div className="title-section">
@@ -90,7 +94,9 @@ function PokeApp() {
                   })}
                 </div>
             </ul>
+
           </div>
+          <button id="feeling-lucky" className="feeling-lucky-button" onClick={getRandomPokemon}>I'm Feeling Lucky</button>
         </form>
       </div>
         <Outlet />
