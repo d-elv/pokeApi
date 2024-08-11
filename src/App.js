@@ -52,7 +52,7 @@ function PokeApp() {
 
     setFilteredListOfPokemon(
       listOfAllPokemonNames.filter(name => {
-        return name.startsWith(event.target.value);
+        return name.startsWith((event.target.value).toLowerCase());
       })
     );
   }
