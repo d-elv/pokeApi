@@ -140,6 +140,25 @@
   margin-top: 1.3em;
 }
 
+.feeling-lucky-button {
+  margin-top: 1em;
+  border-radius: 12px;
+  border: 0;
+  font-size: 0.9rem;
+  padding-top: 0.4em;
+  padding-bottom: 0.4em;
+  padding-left: 0.8em;
+  padding-right: 0.8em;
+}
+
+.feeling-lucky-button:hover {
+  cursor: pointer;
+}
+
+.feeling-lucky-button:active {
+  background-color: rgb(186, 186, 186);
+}
+
 @media screen and (min-width: 440px) {
   .call-to-action {
     font-size: 2rem;
