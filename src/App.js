@@ -100,7 +100,7 @@ function PokeApp() {
 
           </div>
         </form>
-          <button id="feeling-lucky" className="feeling-lucky-button" onClick={getRandomPokemon}>I'm Feeling Lucky</button>
+          <button id="feeling-lucky" className="feeling-lucky-button" onClick={getRandomPokemon}>Randomiser!</button>
       </div>
         <Outlet />
     </div>
