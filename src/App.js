@@ -63,7 +63,9 @@ function PokeApp() {
   }
 
   const getRandomPokemon = () => {
-    
+    const randomNumber = Math.floor(Math.random() * 1302);
+    setPokemonName(listOfAllPokemonNames[randomNumber])
+    navigate(`/${pokemonName}`)
   }
 
   return (
