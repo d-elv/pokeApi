@@ -64,8 +64,9 @@ function PokeApp() {
 
   const getRandomPokemon = () => {
     const randomNumber = Math.floor(Math.random() * 1302);
-    setPokemonName(listOfAllPokemonNames[randomNumber])
-    navigate(`/${pokemonName}`)
+    const randomPokemon = listOfAllPokemonNames[randomNumber]
+    setPokemonName(randomPokemon)
+    navigate(`/${randomPokemon}`)
   }
 
   return (
@@ -98,8 +99,8 @@ function PokeApp() {
             </ul>
 
           </div>
-          <button id="feeling-lucky" className="feeling-lucky-button" onClick={getRandomPokemon}>I'm Feeling Lucky</button>
         </form>
+          <button id="feeling-lucky" className="feeling-lucky-button" onClick={getRandomPokemon}>I'm Feeling Lucky</button>
       </div>
         <Outlet />
     </div>
