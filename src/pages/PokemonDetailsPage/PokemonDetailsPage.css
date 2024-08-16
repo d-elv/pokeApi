@@ -52,8 +52,7 @@
   padding-top: 0.5em;
   margin: 0;
   padding-bottom: 2em;
-  height: 100%;
-  width: 100%;
+  height: 100svh;
 }
 
 .text-and-image-wrapper {
@@ -117,12 +116,13 @@
   font-weight: bold;
 }
 
-@media screen and (min-width: 540px) {
+@media (orientation: landscape) {
   .stats-window {
     margin-top: 1em;
     border-radius: 2em;
     padding-top: 1em;
     width: 540px;
+    height: 100%;
   }
 
   .pokemon-image {
