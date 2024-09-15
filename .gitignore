@@ -4,6 +4,7 @@
 /node_modules
 /.pnp
 .pnp.js
+babel.config.js
 
 # testing
 /coverage
