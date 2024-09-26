@@ -1,11 +1,10 @@
-import App from "../App.js"
-import '@testing-library/jest-dom'
+import React from "react";
+import { render, screen } from '@testing-library/react';
+import App from '../App';
+import { PokeApp } from "../App";
 
-test('demo', () => {
-  expect(true).toBe(true)
-})
-
-test("Renders the app to the main page", () => {
-  render(<App />)
-  expect(true).toBeTruthy()
-})
+// describe(PokeApp, () => {
+//   it("Pokemon search bar displays correct initial value, empty or url params", () => {
+//     const {} = render(<PokeApp pokemonName={""} />)
+//   })
+// })

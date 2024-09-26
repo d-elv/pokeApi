@@ -8,12 +8,12 @@ import {
   Outlet,
   useNavigate
 } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, React } from "react";
 import axios from "axios";
 import FourOhFour from "./components/PageNotFound/PageNotFound";
 import PokemonDetailsPage from "./pages/PokemonDetailsPage/PokemonDetailsPage.jsx";
 
-function PokeApp() {
+export function PokeApp() {
   const navigate = useNavigate();
   const { pokemonName: urlPokemonName } = useParams();
   const [pokemonName, setPokemonName] = useState(urlPokemonName || "");
