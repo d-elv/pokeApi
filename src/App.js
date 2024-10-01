@@ -8,7 +8,8 @@ import {
   Outlet,
   useNavigate
 } from "react-router-dom";
-import { useState, useEffect, React } from "react";
+import { useState, useEffect } from "react";
+import React from "react";
 import axios from "axios";
 import FourOhFour from "./components/PageNotFound/PageNotFound";
 import PokemonDetailsPage from "./pages/PokemonDetailsPage/PokemonDetailsPage.jsx";
@@ -77,6 +78,7 @@ export function PokeApp() {
           <div className="search-container">
             <input
               className="search-input"
+              data-testid="search-input"
               type="text"
               onChange={handleInputChange}
               value={pokemonName}

@@ -5,15 +5,16 @@
 
 /** @type {import('jest').Config} */
 const config = {
-  testEnvironment: 'jest-environment-jsdom', // Jest should simulate a browser-like environment for React
+  testEnvironment: 'jsdom', // Jest should simulate a browser-like environment for React
   moduleNameMapper: {
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy', // Mock CSS files
     '\\.(jpg|jpeg|png|gif|svg)$': '<rootDir>/__mocks__/fileMock.js' // Mock image imports
   },
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'], // Setup testing environment
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.js', "<rootDir>/src/setTests.js"], // Setup testing environment
   transform: {
     '^.+\\.(js|jsx)$': 'babel-jest' // Transform JS and JSX using Babel
-  }
+  },
+  moduleFileExtensions: ['js', 'jsx'],
   // All imported modules in your tests should be mocked automatically
   // automock: false,
 
