@@ -41,7 +41,6 @@ export default function PokemonDetailsPage() {
     axios
       .get(`https://pokeapi.co/api/v2/pokemon/${lowerCasePokemonName}`)
       .then((response) => {
-        console.log(response.data);
         const weightInKg = Math.round(response.data.weight / 10);
         const heightInMetres =
           Math.round((response.data.height / 10) * 10) / 10;

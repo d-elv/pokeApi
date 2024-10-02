@@ -4,29 +4,27 @@ import { PokeApp } from "../App";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
 
 describe(PokeApp, () => {
-  it("Pokemon search bar displays correct initial value of an empty string", () => {
-    const { getByTestId } = render(
+  it("Displays correct initial value of an empty string", () => {
+    const screen = render(
       <MemoryRouter>
-        <PokeApp pokemonName={""} />
+        <Routes>
+          <Route path="/" exact element={<PokeApp />} />
+        </Routes>
       </MemoryRouter>
     );
-    const searchInputValue = getByTestId("search-input").textContent;
-    expect(searchInputValue).toEqual("");
+    expect(screen.getByDisplayValue("")).toBeVisible();
   });
-});
 
-describe(PokeApp, () => {
-  it("sets pokemonName state to url params if it contains a Pokemon name", () => {
-    const pokemonName = "jynx";
+  it("Prefills the search input with url params", () => {
+    const pokemonName = "machop";
 
-    const { getByTestId } = render(
+    const screen = render(
       <MemoryRouter initialEntries={[`/${pokemonName}`]}>
         <Routes>
           <Route path="/:pokemonName" exact element={<PokeApp />} />
         </Routes>
       </MemoryRouter>
     );
-    const searchInput = getByTestId("search-input");
-    expect(searchInput.value).toBe(pokemonName);
+    expect(screen.getByDisplayValue(pokemonName)).toBeVisible();
   });
 });

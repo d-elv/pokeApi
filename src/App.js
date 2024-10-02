@@ -79,6 +79,7 @@ export function PokeApp() {
             <input
               className="search-input"
               data-testid="search-input"
+              aria-label="search-input"
               type="text"
               onChange={handleInputChange}
               value={pokemonName}
