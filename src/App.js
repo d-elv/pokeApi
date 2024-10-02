@@ -9,11 +9,12 @@ import {
   useNavigate
 } from "react-router-dom";
 import { useState, useEffect } from "react";
+import React from "react";
 import axios from "axios";
 import FourOhFour from "./components/PageNotFound/PageNotFound";
 import PokemonDetailsPage from "./pages/PokemonDetailsPage/PokemonDetailsPage.jsx";
 
-function PokeApp() {
+export function PokeApp() {
   const navigate = useNavigate();
   const { pokemonName: urlPokemonName } = useParams();
   const [pokemonName, setPokemonName] = useState(urlPokemonName || "");
@@ -77,6 +78,8 @@ function PokeApp() {
           <div className="search-container">
             <input
               className="search-input"
+              data-testid="search-input"
+              aria-label="search-input"
               type="text"
               onChange={handleInputChange}
               value={pokemonName}
