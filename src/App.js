@@ -8,35 +8,18 @@ import {
   Outlet,
   useNavigate
 } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import React from "react";
-import axios from "axios";
 import FourOhFour from "./components/PageNotFound/PageNotFound";
 import PokemonDetailsPage from "./pages/PokemonDetailsPage/PokemonDetailsPage.jsx";
+import {listOfAllPokemonNames} from "./data/listOfAllPokemonNames.js"
 
 export function PokeApp() {
   const navigate = useNavigate();
   const { pokemonName: urlPokemonName } = useParams();
   const [pokemonName, setPokemonName] = useState(urlPokemonName || "");
-  const [listOfAllPokemonNames, setListOfAllPokemonNames] = useState();
   const [filteredListOfPokemon, setFilteredListOfPokemon] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
-
-  useEffect(() => {
-    GetPokemonList();
-  }, [])
-
-  const GetPokemonList = async () => {
-    try {
-      const response = await axios.get("https://pokeapi.co/api/v2/pokemon?limit=1302");
-      const pokeArray = response.data.results;
-      const allPokemonNames = pokeArray.map((pokemon) => pokemon.name);
-      setListOfAllPokemonNames(allPokemonNames);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -99,6 +82,7 @@ export function PokeApp() {
                   )
                   })}
                 </div>
+                
             </ul>
 
           </div>
