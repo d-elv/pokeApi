@@ -13,76 +13,51 @@ function toTitleCase(string) {
 
 export default function PokemonDetailsPage() {
   const navigate = useNavigate();
-  let location = useLocation();
+  const { pathname } = useLocation();
   const toastRef = useRef(null);
-  const [showBackImage, setShowBackImage] = useState(false);
-  const [pokemonInfo, setPokemonInfo] = useState({
-    name: "",
-    id: "",
-    species: "",
-    frontImageUrl: "",
-    backImageUrl: "",
-    hp: "",
-    attack: "",
-    defense: "",
-    type: "",
-    weight: "",
-    height: "",
-  });
+  const [isBackImage, setIsBackImage] = useState(false);
+  const [pokemonInfo, setPokemonInfo] = useState({});
 
   useEffect(() => {
-    if (location) {
-      searchPokemon();
-    }
-  }, [location]);
-
-  const searchPokemon = () => {
-    const lowerCasePokemonName = location.pathname.substring(1).toLowerCase();
-    axios
-      .get(`https://pokeapi.co/api/v2/pokemon/${lowerCasePokemonName}`)
-      .then((response) => {
-        const weightInKg = Math.round(response.data.weight / 10);
-        const heightInMetres =
-          Math.round((response.data.height / 10) * 10) / 10;
-        const titleCasePokemonName = toTitleCase(lowerCasePokemonName);
+    const fetchPokemonDetails = async () => {
+      const pokemonName = pathname.substring(1).toLowerCase();
+      try {
+        const { data } = await axios.get(
+          `https://pokeapi.co/api/v2/pokemon/${pokemonName}`
+        );
+        console.log(data.types.map((type) => type.type.name).join(", "));
         setPokemonInfo({
-          name: titleCasePokemonName,
-          id: response.data.id,
-          species: response.data.species.name,
-          frontImageUrl: response.data.sprites.front_default,
-          backImageUrl: response.data.sprites.back_default,
-          hp: response.data.stats[0].base_stat,
-          attack: response.data.stats[1].base_stat,
-          defense: response.data.stats[2].base_stat,
-          type: response.data.types[0].type.name,
-          weight: weightInKg,
-          height: heightInMetres,
+          name: toTitleCase(data.name),
+          id: data.id,
+          species: data.species.name,
+          frontImageUrl: data.sprites.front_default,
+          backImageUrl: data.sprites.back_default,
+          hp: data.stats[0].base_stat,
+          attack: data.stats[1].base_stat,
+          defense: data.stats[2].base_stat,
+          types: data.types.map((type) => type.type.name).join(", "),
+          weight: Math.round(data.weight / 10),
+          height: Math.round((data.height / 10) * 10) / 10,
         });
-      })
-      .catch((error) => {
-        if (error.response) {
-          if (error.response.status === 404) {
-            navigate("/404");
-            return;
-          }
+        setIsBackImage(false);
+      } catch (error) {
+        if (error.status === 404) {
+          navigate("/404");
         }
-      })
-      .finally(() => {
-        setShowBackImage(false);
-      });
-  };
+      }
+    };
+    fetchPokemonDetails();
+  }, [pathname, navigate]);
+
+  if (!pokemonInfo) {
+    return <p>Loading...</p>;
+  }
 
   const copyToClipbaord = () => {
     navigator.clipboard.writeText(window.location.href);
   };
 
-  const handleImageBoolean = () => {
-    if (showBackImage === true) {
-      setShowBackImage(false);
-    } else {
-      setShowBackImage(true);
-    }
-  };
+  const toggleImageSide = () => setIsBackImage((prev) => !prev);
 
   return (
     <div className="display-section">
@@ -106,7 +81,7 @@ export default function PokemonDetailsPage() {
               <span className="bold">Species:</span> {pokemonInfo.species}
             </p>
             <p>
-              <span className="bold">Type:</span> {pokemonInfo.type}
+              <span className="bold">Type:</span> {pokemonInfo.types}
             </p>
             <p>
               <span className="bold">HP:</span> {pokemonInfo.hp}
@@ -128,20 +103,15 @@ export default function PokemonDetailsPage() {
           </div>
           <div className="image-window">
             <img
-              className={`pokemon-image ${
-                showBackImage ? "invisible" : "visible"
-              }`}
-              src={pokemonInfo.frontImageUrl}
-              alt="front view of chosen pokemon"
+              className={"pokemon-image"}
+              src={
+                isBackImage
+                  ? pokemonInfo.backImageUrl
+                  : pokemonInfo.frontImageUrl
+              }
+              alt={`${pokemonInfo.name} ${isBackImage} ? "back" : "front"`}
             />
-            <img
-              className={`pokemon-image ${
-                showBackImage ? "visible" : "invisible"
-              }`}
-              src={pokemonInfo.backImageUrl}
-              alt="back view of chosen pokemon"
-            />
-            <button className="image-arrow" onClick={handleImageBoolean}>
+            <button className="image-arrow" onClick={toggleImageSide}>
               ➭
             </button>
           </div>
