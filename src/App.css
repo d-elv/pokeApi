@@ -67,11 +67,11 @@
   color: black;
   top: 100%;
   font-size: 0.8rem;
-  width: 200px;
+  width: 212px;
   max-height: 10em;
   overflow-y: scroll;
-  padding-left: 8px;
-  padding-right: 4px;
+  padding-left: 0px;
+  padding-right: 0px;
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
   border-bottom-left-radius: 8px;
@@ -97,6 +97,7 @@
   margin: 0;
   padding-top: 4px;
   padding-bottom: 4px;
+  padding-left: 8px;
 }
 
 .list-item-pokemon-name:hover {
