@@ -1,4 +1,4 @@
-jest.mock('./styles.scss', () => ({
+vi.mock('./styles.scss', () => ({
   __esModule: true,
   default: {
     class1: 'class1',

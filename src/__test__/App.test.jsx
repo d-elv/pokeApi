@@ -1,9 +1,9 @@
-import React from "react";
+import * as React from "react";
 import { render } from "@testing-library/react";
 import { PokeApp } from "../App";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
 
-describe(PokeApp, () => {
+describe("PokeApp", () => {
   it("Displays correct initial value of an empty string", () => {
     const screen = render(
       <MemoryRouter>

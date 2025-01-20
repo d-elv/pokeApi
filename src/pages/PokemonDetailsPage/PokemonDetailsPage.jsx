@@ -3,7 +3,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { Toast } from "../../components/toast/toast";
 import axios from "axios";
 import "./PokemonDetailsPage.css";
-import React from "react";
 
 function toTitleCase(string) {
   return string.replace(/\w\S*/g, function (text) {
