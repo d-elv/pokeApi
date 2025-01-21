@@ -24,7 +24,6 @@ export default function PokemonDetailsPage() {
         const { data } = await axios.get(
           `https://pokeapi.co/api/v2/pokemon/${pokemonName}`
         );
-        console.log(data.types.map((type) => type.type.name).join(", "));
         setPokemonInfo({
           name: toTitleCase(data.name),
           id: data.id,
