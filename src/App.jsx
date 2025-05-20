@@ -30,7 +30,10 @@ function SearchInput({ handleInputChange, value }) {
 
 function SearchDropdown({ showDropdown, filteredList, onItemSelect }) {
   return (
-    <ul className={`pokemon-name-list ${showDropdown ? "dropdown" : ""}`}>
+    <ul
+      className={`pokemon-name-list ${showDropdown ? "dropdown" : ""}`}
+      data-testid="dropdown"
+    >
       <div className="dropdown-content">
         {filteredList.map((pokemon, index) => {
           return (
