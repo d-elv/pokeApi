@@ -56,7 +56,6 @@
 }
 
 .pokemon-name-list {
-  display: none;
   list-style-type: none;
   margin: 0;
 }
@@ -77,6 +76,10 @@
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
   background-color: #d4ebff;
+}
+
+.dropdown-hidden {
+  display: none;
 }
 
 .pokemon-list-link {

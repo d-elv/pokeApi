@@ -31,24 +31,24 @@ function SearchInput({ handleInputChange, value }) {
 function SearchDropdown({ showDropdown, filteredList, onItemSelect }) {
   return (
     <ul
-      className={`pokemon-name-list ${showDropdown ? "dropdown" : ""}`}
+      className={`pokemon-name-list ${
+        showDropdown ? "dropdown" : "dropdown-hidden"
+      }`}
       data-testid="dropdown"
     >
-      <div className="dropdown-content">
-        {filteredList.map((pokemon, index) => {
-          return (
-            <li key={index} className="list-item-pokemon-name">
-              <Link
-                to={{ pathname: `/${pokemon.item}` }}
-                className="pokemon-list-link"
-                onClick={() => onItemSelect(pokemon.item)}
-              >
-                <p className="single-poke-name">{pokemon.item}</p>
-              </Link>
-            </li>
-          );
-        })}
-      </div>
+      {filteredList.map((pokemon, index) => {
+        return (
+          <li key={index} className="list-item-pokemon-name">
+            <Link
+              to={{ pathname: `/${pokemon.item}` }}
+              className="pokemon-list-link"
+              onClick={() => onItemSelect(pokemon.item)}
+            >
+              <p className="single-poke-name">{pokemon.item}</p>
+            </Link>
+          </li>
+        );
+      })}
     </ul>
   );
 }
@@ -78,6 +78,7 @@ export function PokeApp() {
 
   const handleSearchSubmit = (event) => {
     event.preventDefault();
+    setShowDropdown(false);
     navigate(`/${pokemonName}`);
   };
 
@@ -85,6 +86,7 @@ export function PokeApp() {
     const randomNumber = Math.floor(Math.random() * 1302);
     const randomPokemon = pokemonList[randomNumber];
     setPokemonName(randomPokemon);
+    setShowDropdown(false);
     navigate(`/${randomPokemon}`);
   };
 

@@ -1,4 +1,3 @@
-import * as React from "react";
 import {
   render,
   screen,
@@ -86,9 +85,9 @@ describe("PokeApp", () => {
 
   it("Navigates when a pokemon is clicked in the dropdown", async () => {
     const navigate = vi.fn();
-
     vi.spyOn(router, "useNavigate").mockImplementation(() => navigate);
     const user = userEvent.setup();
+
     const screen = render(
       <MemoryRouter>
         <Routes>
@@ -119,8 +118,8 @@ describe("PokeApp", () => {
   it("Calls randomiser function and navigates when button is clicked", async () => {
     const navigate = vi.fn();
     vi.spyOn(router, "useNavigate").mockImplementation(() => navigate);
-
     const user = userEvent.setup();
+
     const screen = render(
       <MemoryRouter>
         <Routes>
@@ -131,5 +130,30 @@ describe("PokeApp", () => {
 
     await user.click(screen.getByText("Randomiser!"));
     expect(navigate).toHaveBeenCalledTimes(1);
+  });
+
+  it("submits the form and navigates to the pokemon page then closes dropdown", async () => {
+    const navigate = vi.fn();
+    vi.spyOn(router, "useNavigate").mockImplementation(() => navigate);
+    const user = userEvent.setup();
+
+    render(
+      <MemoryRouter>
+        <Routes>
+          <Route path="/" element={<PokeApp />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    const searchInput = screen.getByTestId("search-input");
+    await user.type(searchInput, "charizard");
+    await user.keyboard("{Enter}");
+
+    expect(navigate).toHaveBeenCalledWith("/charizard");
+
+    await waitFor(() => {
+      const dropdown = screen.getByTestId("dropdown");
+      expect(dropdown.className).toMatch(/dropdown-hidden/);
+    });
   });
 });
