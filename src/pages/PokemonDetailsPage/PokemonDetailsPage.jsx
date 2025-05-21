@@ -55,8 +55,6 @@ export default function PokemonDetailsPage() {
     navigator.clipboard.writeText(window.location.href);
   };
 
-  const toggleImageSide = () => setIsBackImage((prev) => !prev);
-
   return (
     <div className="display-section">
       <Toast ref={toastRef}>URL copied to clipboard!</Toast>
@@ -107,9 +105,12 @@ export default function PokemonDetailsPage() {
                   ? pokemonInfo.backImageUrl
                   : pokemonInfo.frontImageUrl
               }
-              alt={`${pokemonInfo.name} ${isBackImage} ? "back" : "front"`}
+              alt={`${pokemonInfo.name} ${isBackImage} ? "back view" : "front view"`}
             />
-            <button className="image-arrow" onClick={toggleImageSide}>
+            <button
+              className="image-arrow"
+              onClick={() => setIsBackImage((prev) => !prev)}
+            >
               ➭
             </button>
           </div>
