@@ -4,18 +4,86 @@ import { Toast } from "../../components/toast/toast";
 import axios from "axios";
 import "./PokemonDetailsPage.css";
 
-function toTitleCase(string) {
+const toTitleCase = (string) => {
   return string.replace(/\w\S*/g, function (text) {
     return text.charAt(0).toUpperCase() + text.substr(1).toLowerCase();
   });
+};
+
+function StatsImage({ source, alt }) {
+  return <img className="pokemon-image" src={source} alt={alt} />;
 }
+
+function NotFoundImage() {
+  return (
+    <img
+      className="pokemon-image"
+      src="/public/images/image-not-found_comped_transparent.png"
+      alt="not found"
+    />
+  );
+}
+
+const StatsImageLogic = ({ info, showBackImage }) => {
+  const [frontResponse, setFrontResponse] = useState(undefined);
+  const [backResponse, setBackResponse] = useState(undefined);
+
+  useEffect(() => {
+    if (info.frontImageUrl === null) {
+      setFrontResponse(null);
+    }
+    if (info.backImageUrl === null) {
+      setBackResponse(null);
+    }
+    if (info.frontImageUrl !== null && info.frontImageUrl !== undefined) {
+      setFrontResponse(true);
+    }
+    if (info.backImageUrl !== null && info.backImageUrl !== undefined) {
+      setBackResponse(true);
+    }
+  }, [info.frontImageUrl, info.backImageUrl]);
+
+  if (frontResponse === undefined && showBackImage === false) {
+    return (
+      <div className="loading-container">
+        <span className="loading-spinner"></span>
+      </div>
+    );
+  }
+  if (backResponse === undefined && showBackImage === true) {
+    return (
+      <div className="loading-container">
+        <span className="loading-spinner"></span>
+      </div>
+    );
+  }
+
+  if (frontResponse === null && showBackImage === false) {
+    return <NotFoundImage />;
+  }
+  if (backResponse === null && showBackImage === true) {
+    return <NotFoundImage />;
+  }
+
+  if (frontResponse === true && showBackImage === false) {
+    return (
+      <StatsImage source={info.frontImageUrl} alt={`${info.name} front view`} />
+    );
+  }
+  if (backResponse === true && showBackImage === true) {
+    return (
+      <StatsImage source={info.backImageUrl} alt={`${info.name} back view`} />
+    );
+  }
+};
 
 export default function PokemonDetailsPage() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const toastRef = useRef(null);
-  const [isBackImage, setIsBackImage] = useState(false);
+  const [showBackImage, setShowBackImage] = useState(false);
   const [pokemonInfo, setPokemonInfo] = useState({});
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchPokemonDetails = async () => {
@@ -28,6 +96,8 @@ export default function PokemonDetailsPage() {
           name: toTitleCase(data.name),
           id: data.id,
           species: data.species.name,
+          // frontImageUrl: undefined,
+          // backImageUrl: undefined,
           frontImageUrl: data.sprites.front_default,
           backImageUrl: data.sprites.back_default,
           hp: data.stats[0].base_stat,
@@ -37,7 +107,7 @@ export default function PokemonDetailsPage() {
           weight: Math.round(data.weight / 10),
           height: Math.round((data.height / 10) * 10) / 10,
         });
-        setIsBackImage(false);
+        setLoading(false);
       } catch (error) {
         if (error.status === 404) {
           navigate("/404");
@@ -47,9 +117,9 @@ export default function PokemonDetailsPage() {
     fetchPokemonDetails();
   }, [pathname, navigate]);
 
-  if (!pokemonInfo) {
-    return <p>Loading...</p>;
-  }
+  // if (!pokemonInfo) {
+  //   return <p>Loading...</p>;
+  // }
 
   const copyToClipbaord = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -98,18 +168,11 @@ export default function PokemonDetailsPage() {
             </p>
           </div>
           <div className="image-window">
-            <img
-              className={"pokemon-image"}
-              src={
-                isBackImage
-                  ? pokemonInfo.backImageUrl
-                  : pokemonInfo.frontImageUrl
-              }
-              alt={`${pokemonInfo.name} ${isBackImage} ? "back view" : "front view"`}
-            />
+            <StatsImageLogic info={pokemonInfo} showBackImage={showBackImage} />
+
             <button
               className="image-arrow"
-              onClick={() => setIsBackImage((prev) => !prev)}
+              onClick={() => setShowBackImage((prev) => !prev)}
             >
               ➭
             </button>
@@ -119,3 +182,8 @@ export default function PokemonDetailsPage() {
     </div>
   );
 }
+
+// Is there a url?
+// is there a url for the front image?
+// is there a url for the back image?
+// loading state for 3 seconds - if no url, load generic pokemon image
