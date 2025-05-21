@@ -24,57 +24,87 @@ function NotFoundImage() {
   );
 }
 
+function LoadingSpinner() {
+  return (
+    <div className="loading-container">
+      <span className="loading-spinner"></span>
+    </div>
+  );
+}
+
 const StatsImageLogic = ({ info, showBackImage }) => {
-  const [frontResponse, setFrontResponse] = useState(undefined);
-  const [backResponse, setBackResponse] = useState(undefined);
+  const [imagesState, setImagesState] = useState({
+    front: { loaded: false, error: false },
+    back: { loaded: false, error: false },
+  });
 
   useEffect(() => {
-    if (info.frontImageUrl === null) {
-      setFrontResponse(null);
+    setImagesState({
+      front: { loaded: false, error: false },
+      back: { loaded: false, error: false },
+    });
+
+    if (!info.frontImageUrl) {
+      setImagesState((prev) => ({
+        ...prev,
+        front: { loaded: true, error: true },
+      }));
+    } else {
+      const frontImage = new Image();
+      frontImage.onload = () => {
+        setImagesState((prev) => ({
+          ...prev,
+          front: { loaded: true, error: false },
+        }));
+      };
+      frontImage.onerror = () => {
+        setImagesState((prev) => ({
+          ...prev,
+          front: { loaded: true, error: true },
+        }));
+      };
+      frontImage.src = info.frontImageUrl;
     }
-    if (info.backImageUrl === null) {
-      setBackResponse(null);
-    }
-    if (info.frontImageUrl !== null && info.frontImageUrl !== undefined) {
-      setFrontResponse(true);
-    }
-    if (info.backImageUrl !== null && info.backImageUrl !== undefined) {
-      setBackResponse(true);
+
+    if (!info.backImageUrl) {
+      setImagesState((prev) => ({
+        ...prev,
+        back: { loaded: true, error: true },
+      }));
+    } else {
+      const backImage = new Image();
+      backImage.onload = () => {
+        setImagesState((prev) => ({
+          ...prev,
+          back: { loaded: true, error: false },
+        }));
+      };
+      backImage.onerror = () => {
+        setImagesState((prev) => ({
+          ...prev,
+          back: { loaded: true, error: true },
+        }));
+      };
+      backImage.src = info.backImageUrl;
     }
   }, [info.frontImageUrl, info.backImageUrl]);
 
-  if (frontResponse === undefined && showBackImage === false) {
-    return (
-      <div className="loading-container">
-        <span className="loading-spinner"></span>
-      </div>
-    );
-  }
-  if (backResponse === undefined && showBackImage === true) {
-    return (
-      <div className="loading-container">
-        <span className="loading-spinner"></span>
-      </div>
-    );
+  const currentView = showBackImage ? "back" : "front";
+  const currentImageState = imagesState[currentView];
+  const currentImageUrl = showBackImage
+    ? info.backImageUrl
+    : info.frontImageUrl;
+  const altText = `${info.name} ${currentView} view`;
+
+  if (!currentImageState.loaded) {
+    return <LoadingSpinner />;
   }
 
-  if (frontResponse === null && showBackImage === false) {
-    return <NotFoundImage />;
-  }
-  if (backResponse === null && showBackImage === true) {
+  if (currentImageState.error) {
     return <NotFoundImage />;
   }
 
-  if (frontResponse === true && showBackImage === false) {
-    return (
-      <StatsImage source={info.frontImageUrl} alt={`${info.name} front view`} />
-    );
-  }
-  if (backResponse === true && showBackImage === true) {
-    return (
-      <StatsImage source={info.backImageUrl} alt={`${info.name} back view`} />
-    );
-  }
+  return <StatsImage source={currentImageUrl} alt={altText} />;
 };
 
 export default function PokemonDetailsPage() {
@@ -83,7 +113,6 @@ export default function PokemonDetailsPage() {
   const toastRef = useRef(null);
   const [showBackImage, setShowBackImage] = useState(false);
   const [pokemonInfo, setPokemonInfo] = useState({});
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchPokemonDetails = async () => {
@@ -107,7 +136,6 @@ export default function PokemonDetailsPage() {
           weight: Math.round(data.weight / 10),
           height: Math.round((data.height / 10) * 10) / 10,
         });
-        setLoading(false);
       } catch (error) {
         if (error.status === 404) {
           navigate("/404");
@@ -116,10 +144,6 @@ export default function PokemonDetailsPage() {
     };
     fetchPokemonDetails();
   }, [pathname, navigate]);
-
-  // if (!pokemonInfo) {
-  //   return <p>Loading...</p>;
-  // }
 
   const copyToClipbaord = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -167,6 +191,7 @@ export default function PokemonDetailsPage() {
               {" (kg)"}
             </p>
           </div>
+
           <div className="image-window">
             <StatsImageLogic info={pokemonInfo} showBackImage={showBackImage} />
 
@@ -182,8 +207,3 @@ export default function PokemonDetailsPage() {
     </div>
   );
 }
-
-// Is there a url?
-// is there a url for the front image?
-// is there a url for the back image?
-// loading state for 3 seconds - if no url, load generic pokemon image
