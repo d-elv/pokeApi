@@ -4,17 +4,114 @@ import { Toast } from "../../components/toast/toast";
 import axios from "axios";
 import "./PokemonDetailsPage.css";
 
-function toTitleCase(string) {
+const toTitleCase = (string) => {
   return string.replace(/\w\S*/g, function (text) {
     return text.charAt(0).toUpperCase() + text.substr(1).toLowerCase();
   });
+};
+
+function StatsImage({ source, alt }) {
+  return <img className="pokemon-image" src={source} alt={alt} />;
 }
+
+function NotFoundImage() {
+  return (
+    <img
+      className="pokemon-image"
+      src="/public/images/image-not-found_comped_transparent.png"
+      alt="not found"
+    />
+  );
+}
+
+function LoadingSpinner() {
+  return (
+    <div className="loading-container">
+      <span className="loading-spinner"></span>
+    </div>
+  );
+}
+
+const StatsImageLogic = ({ info, showBackImage }) => {
+  const [imagesState, setImagesState] = useState({
+    front: { loaded: false, error: false },
+    back: { loaded: false, error: false },
+  });
+
+  useEffect(() => {
+    setImagesState({
+      front: { loaded: false, error: false },
+      back: { loaded: false, error: false },
+    });
+
+    if (!info.frontImageUrl) {
+      setImagesState((prev) => ({
+        ...prev,
+        front: { loaded: true, error: true },
+      }));
+    } else {
+      const frontImage = new Image();
+      frontImage.onload = () => {
+        setImagesState((prev) => ({
+          ...prev,
+          front: { loaded: true, error: false },
+        }));
+      };
+      frontImage.onerror = () => {
+        setImagesState((prev) => ({
+          ...prev,
+          front: { loaded: true, error: true },
+        }));
+      };
+      frontImage.src = info.frontImageUrl;
+    }
+
+    if (!info.backImageUrl) {
+      setImagesState((prev) => ({
+        ...prev,
+        back: { loaded: true, error: true },
+      }));
+    } else {
+      const backImage = new Image();
+      backImage.onload = () => {
+        setImagesState((prev) => ({
+          ...prev,
+          back: { loaded: true, error: false },
+        }));
+      };
+      backImage.onerror = () => {
+        setImagesState((prev) => ({
+          ...prev,
+          back: { loaded: true, error: true },
+        }));
+      };
+      backImage.src = info.backImageUrl;
+    }
+  }, [info.frontImageUrl, info.backImageUrl]);
+
+  const currentView = showBackImage ? "back" : "front";
+  const currentImageState = imagesState[currentView];
+  const currentImageUrl = showBackImage
+    ? info.backImageUrl
+    : info.frontImageUrl;
+  const altText = `${info.name} ${currentView} view`;
+
+  if (!currentImageState.loaded) {
+    return <LoadingSpinner />;
+  }
+
+  if (currentImageState.error) {
+    return <NotFoundImage />;
+  }
+
+  return <StatsImage source={currentImageUrl} alt={altText} />;
+};
 
 export default function PokemonDetailsPage() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const toastRef = useRef(null);
-  const [isBackImage, setIsBackImage] = useState(false);
+  const [showBackImage, setShowBackImage] = useState(false);
   const [pokemonInfo, setPokemonInfo] = useState({});
 
   useEffect(() => {
@@ -28,6 +125,8 @@ export default function PokemonDetailsPage() {
           name: toTitleCase(data.name),
           id: data.id,
           species: data.species.name,
+          // frontImageUrl: undefined,
+          // backImageUrl: undefined,
           frontImageUrl: data.sprites.front_default,
           backImageUrl: data.sprites.back_default,
           hp: data.stats[0].base_stat,
@@ -37,7 +136,6 @@ export default function PokemonDetailsPage() {
           weight: Math.round(data.weight / 10),
           height: Math.round((data.height / 10) * 10) / 10,
         });
-        setIsBackImage(false);
       } catch (error) {
         if (error.status === 404) {
           navigate("/404");
@@ -46,10 +144,6 @@ export default function PokemonDetailsPage() {
     };
     fetchPokemonDetails();
   }, [pathname, navigate]);
-
-  if (!pokemonInfo) {
-    return <p>Loading...</p>;
-  }
 
   const copyToClipbaord = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -97,19 +191,13 @@ export default function PokemonDetailsPage() {
               {" (kg)"}
             </p>
           </div>
+
           <div className="image-window">
-            <img
-              className={"pokemon-image"}
-              src={
-                isBackImage
-                  ? pokemonInfo.backImageUrl
-                  : pokemonInfo.frontImageUrl
-              }
-              alt={`${pokemonInfo.name} ${isBackImage} ? "back view" : "front view"`}
-            />
+            <StatsImageLogic info={pokemonInfo} showBackImage={showBackImage} />
+
             <button
               className="image-arrow"
-              onClick={() => setIsBackImage((prev) => !prev)}
+              onClick={() => setShowBackImage((prev) => !prev)}
             >
               ➭
             </button>
